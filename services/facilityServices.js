@@ -6,10 +6,10 @@ const ensureJSONString = (obj) =>
 const validateCoordinates = (coordinates) => {
     if (
         !coordinates ||
-        typeof coordinates.lng !== 'number' ||
-        typeof coordinates.lat !== 'number' ||
-        isNaN(coordinates.lng) ||
-        isNaN(coordinates.lat)
+        typeof coordinates.longitude !== 'number' ||
+        typeof coordinates.latitude !== 'number' ||
+        isNaN(coordinates.longitude) ||
+        isNaN(coordinates.latitude)
     ) {
         throw new Error("Invalid coordinates");
     }
@@ -17,12 +17,14 @@ const validateCoordinates = (coordinates) => {
 
 
 const createFacility = async (facilityData) => {
+    console.log("create facility",facilityData);
     const { name, facility_type, license_number, email, password, phone,location_info, coordinates } = facilityData;
     const query = `INSERT INTO facility (name, facility_type, license_number, email, password, phone, location_info,coordinates) 
                     VALUES ( ?, ?, ?, ?, ?, ?, ?, ST_GeomFromText(?))`;
+    console.log("query:",query);
     try {
         validateCoordinates(coordinates);
-        const point = `POINT(${coordinates.lng} ${coordinates.lat})`;
+        const point = `POINT(${coordinates.longitude} ${coordinates.latitude})`;
         console.log("Geo Point to insert:", point);
         const [row] = await db.execute(query, [name, facility_type, license_number, email, password, phone, JSON.stringify(location_info),point]);
         return { id: row.insertId, ...facilityData };

@@ -9,7 +9,23 @@ import axios from "axios";
 
 const MFSignup = () => {
   const navigate = useNavigate();
-
+  // location fetching
+  const coordinates={latitude:"",longitude:""};
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        coordinates.latitude = position.coords.latitude;
+        coordinates.longitude = position.coords.longitude;
+        
+      },
+      (error) => {
+        console.error("Error getting location:", error.message);
+      }
+    );
+  } else {
+    console.error("Geolocation is not supported by this browser.");
+  }
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -17,8 +33,8 @@ const MFSignup = () => {
     const email = formData.get('email');
     const password = formData.get('password');
     const confirmPassword = formData.get('confirmPassword');
-    const licenseNumber = formData.get('licenseNumber');
-    const facilityType = formData.get('facilityType');
+    const license_number = formData.get('licenseNumber');
+    const facility_type = formData.get('facilityType');
     const phone = formData.get('phone');
     const address = formData.get('address');
     const city = formData.get('city');
@@ -30,7 +46,8 @@ const MFSignup = () => {
       console.log('Passwords do not match!');
       toast.error("Passwords do not match!");
     } else {
-      const facility = { name, email, licenseNumber, facilityType, password ,address ,city,state,zipCode};
+      const location_info={address,city,zipCode,state};
+      const facility = { name, email, license_number, facility_type,phone, password ,location_info,coordinates};
       console.log('Form submitted:', facility);
 
       try {

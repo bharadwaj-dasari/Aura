@@ -11,6 +11,7 @@ const createFacility = async (req, res) => {
             password:hashedPassword
            
         }
+        console.log('facilty controller:',facilityData);
         const facility = await facilityServices.createFacility(facilityData);
         res.status(201).json({message:"Facility created Successfully",facility});
     } catch (error) {
