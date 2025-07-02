@@ -76,7 +76,16 @@ const getFacilityByEmail = async(req,res)=> {
         res.status(400).json({error:error.message});
     }
 }
-
+const getApprovalStauts=async(req,res)=>{
+    console.log("getApprovalStauts called with email:", req.params.email);
+    try{
+        const email = req.params.email;
+        const facility = await facilityServices.getFacilityByEmail(email);
+        res.status(200).json({status:facility.verified});
+    }catch(error){
+        res.status(400).json({error:error.message});
+    }
+}
 const updateFacility = async (req, res) => {
     try {
         const updatedFacility = await facilityServices.updateFacility(req.params.id, req.body);
@@ -96,4 +105,4 @@ const deleteFacility = async (req, res) => {
     }
 };
 
-module.exports = { createFacility,AuthFacility, getAllFacilities, getFacilityById,getFacilityByEmail, updateFacility, deleteFacility };
+module.exports = { createFacility,AuthFacility, getAllFacilities, getFacilityById,getFacilityByEmail, updateFacility, deleteFacility,getApprovalStauts };

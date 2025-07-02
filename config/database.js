@@ -2,9 +2,9 @@ const mysql = require("mysql2");
 
 const dbConfig = {
   host: "localhost",
-  user: "root",
+  // user: "root",
   password: "zx@123",
-  // password:"Dileep@1412",
+  password:"Dileep@1412",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,

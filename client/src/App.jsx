@@ -16,6 +16,7 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import GoogleSignup from "./pages/GoogleSignup.jsx";
 import Layout from "./layouts/Layout.jsx";
 import BloodBankLayout from "./layouts/BloodBankLayout.jsx";
+import Approval from "./pages/Approval";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/VLogin" element={<VLogin />} />
         <Route path="/MFLogin" element={<MFLogin />} />
         <Route path="/MFSignup" element={<MFSignup />} />
+        <Route path="/approval" element={<Approval/>} />
         <Route path="/VSignup" element={<VSignup />} />
         <Route path="/google-signup" element={<GoogleSignup />} />
       </Routes>

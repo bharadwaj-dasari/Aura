@@ -59,7 +59,7 @@ const MFSignup = () => {
           const userRole = "bloodbank";
           login(email,userRole);
           toast.success("Signup successful!");
-          navigate("/bloodbank");
+          navigate("/approval");
         } else {
           console.log("error signing up", response.data.message);
           toast.error("Signup failed. Please try again.");
@@ -96,7 +96,7 @@ const MFSignup = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className={styles.title}>Medical Facility Sign Up</h1>
+        <h1 className={styles.title}>Registration</h1>
         
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -113,7 +113,7 @@ const MFSignup = () => {
           <div className={styles.formGroup}>
             <label htmlFor="facilityType">Facility Type</label>
             <select
-              id="facilityType"
+              id={styles.facilityType}
               name="facilityType"
               className={styles.select}
               required
@@ -232,12 +232,12 @@ const MFSignup = () => {
             whileTap={{ scale: 0.98 }}
             type="submit"
           >
-            Sign Up
+            Register
           </motion.button>
 
         </form>
 
-        <div className={styles.divider}>
+        {/* <div className={styles.divider}>
           <span>or continue with</span>
         </div>
 
@@ -250,7 +250,7 @@ const MFSignup = () => {
             text="signup_with"
             shape="rectangular"
           />
-        </div>
+        </div> */}
 
         <p className={styles.switchText}>
           Already have an account?

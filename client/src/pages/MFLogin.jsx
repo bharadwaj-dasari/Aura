@@ -17,7 +17,6 @@ const MFLogin = () => {
     const formdata = new FormData(e.currentTarget);
     const email = formdata.get('email').trim();
     const password = formdata.get('password').trim();
-    console.log(password);
 
     try {
       const response = await axios.post("http://localhost:5000/api/facility/login", { email, password });
@@ -27,7 +26,14 @@ const MFLogin = () => {
         login(email,userRole);
         localStorage.setItem("email", email);
         toast.success('Login Successful!');
-        navigate("/bloodbank")
+        const status=await axios.get(`http://localhost:5000/api/facility/approval/${email}`);
+        console.log("Approval Status:", status.data.status);
+        if(status.data.status === 2) {
+        navigate("/bloodbank");
+        }
+        else{
+          navigate("/approval");
+        }
       } else {
         console.log("invalid user");
         toast.error("Invalid Credentials");

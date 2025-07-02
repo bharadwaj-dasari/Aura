@@ -97,7 +97,9 @@
   color: var(--neutral-700);
   text-align: left;
 }
-
+#facilityType{
+  height: 30px;
+}
 .inputField {
   width: 90%;
   padding: 12px 16px;

@@ -1,0 +1,81 @@
+.step {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ccc;
+  position: relative;
+  z-index: 1;
+}
+
+.completed .circle {
+  background-color: green;
+}
+
+.current .circle {
+  background-color: #3f87f5;
+}
+
+/* Vertical line */
+.step::before {
+  content: '';
+  position: absolute;
+  left: 6px; /* half of circle width to center it */
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #ccc;
+  z-index: 0;
+}
+
+/* Don't show line on first step */
+.step:first-child::before {
+  content: none;
+}
+
+.stepContent {
+  margin-left: 12px;
+  flex: 1;
+}
+
+.approvalCard {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 320px;
+  font-family: sans-serif;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.stepper {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.details {
+  font-size: 0.85em;
+  color: #555;
+}
+
+a {
+  color: #3f87f5;
+  text-decoration: none;
+}
+
+.timestamp {
+  font-size: 0.75em;
+  color: #999;
+  margin-top: 4px;
+}
