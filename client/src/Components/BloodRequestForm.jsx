@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './BloodRequestForm.module.css';
 import { X } from 'lucide-react';
+import axios from 'axios';
+import {toast} from 'react-hot-toast';
+import { useAuth } from '../Context/AuthContext';
 
 const BloodRequestForm = ({ onClose }) => {
+  const {userEmail}=useAuth();
+  const [MFData,setMFData] = useState(null);
+  const email = userEmail || localStorage.getItem("email");
   const [formData, setFormData] = useState({
     blood_group: '',
     units: 1,
@@ -24,10 +30,41 @@ const BloodRequestForm = ({ onClose }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  useEffect(()=>{
+     const fetchFacilityData = async() => {
+      try{
+        const res = await axios.get(`http://localhost:5000/api/facility/${email}`);
+        setMFData(res.data);
+        console.log("Fetched Facility Data:",res.data);
+      }catch(err){
+        console.error("Error fetching facility Data:",err.message);
+        toast.error("no Facility data");
+      }
+     };
+     if(email)fetchFacilityData();
+  },[email]);
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Here you would typically make an API call to save the request
+    try{
+      const facility_id= MFData?.id;
+      const payload = {facility_id,...formData};
+      console.log("Payload Submitting");
+      if(!payload){
+        toast.error("Payload is missing!");
+      }
+      const response = await axios.post("http://localhost:5000/api/blood-requests",payload);
+      if(response.status === 201){
+        toast.success("Request added successfully");
+      }else{
+        console.log("Error adding blood request",response.data.message);
+        toast.error("Error adding Blood request.Try again!");
+      }
+    }catch(error){
+      console.log("Error adding blood request",error);
+      toast.error("Error at server.try again later");
+    }
     onClose();
   };
 
@@ -35,7 +72,7 @@ const BloodRequestForm = ({ onClose }) => {
     <div className={styles.formOverlay}>
       <div className={styles.formContainer}>
         <div className={styles.formHeader}>
-          <h2>New Blood Request</h2>
+          <h2>New Blood Request </h2>
           <button className={styles.closeButton} onClick={onClose}>
             <X size={24} />
           </button>

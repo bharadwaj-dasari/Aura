@@ -7,6 +7,10 @@ require('dotenv').config();
 const createDonor = async (req, res) => {
     try {
         console.log(req.body);
+        const existingDonor = await donorServices.getDonor(req.body.email);
+        if(existingDonor){
+            res.status(409).json({message:"Donor already exists with this Email"});
+        }
         const hashedPassword = await bcrypt.hash(req.body.password,10);
         const donorData= {
             ...req.body,
@@ -70,7 +74,7 @@ const getDonorByEmail = async(req,res)=>{
         if(!donor){
             return res.status(404).json({message:"Donor not found"})
         }
-        res.json(donor);
+        res.status(200).json(donor);
     }
     catch(error){
         res.status(500).json({message: error.message});

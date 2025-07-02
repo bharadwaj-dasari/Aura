@@ -13,7 +13,7 @@ const DonorProfile = () => {
     const fetchDonorData = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/api/donors/${userEmail}`);
-        setDonorData(res.data);
+        if(res.status === 200)setDonorData(res.data); 
       } catch (err) {
         console.error("Error fetching the donor data:", err.message);
       }

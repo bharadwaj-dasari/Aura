@@ -5,23 +5,29 @@ import styles from './auth.module.css';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import{useAuth} from '../Context/AuthContext';
 
 const MFLogin = () => {
   const navigate = useNavigate();
   const [valid, setValid] = useState(false);
-
+  const {login} = useAuth();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formdata = new FormData(e.currentTarget);
-    const email = formdata.get('email');
-    const password = formdata.get('password');
+    const email = formdata.get('email').trim();
+    const password = formdata.get('password').trim();
     console.log(password);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/facilities/auth", { email, password });
-      if (response.data.message === "valid") {
-        setValid(true);
+      const response = await axios.post("http://localhost:5000/api/facility/login", { email, password });
+      console.log("Login Response:",response.data);
+      if (response.data.message === "Login Successful") {
+        const userRole = "bloodbank";
+        login(email,userRole);
+        localStorage.setItem("email", email);
         toast.success('Login Successful!');
+        navigate("/bloodbank")
       } else {
         console.log("invalid user");
         toast.error("Invalid Credentials");
@@ -39,9 +45,11 @@ const MFLogin = () => {
       const response = await axios.post("http://localhost:5000/api/googleAuth", { credential });
       console.log("response", response);
 
-      if (response.data.message === "success") {
+      if (response.status === 400) {
         console.log("success");
-        setValid(true);
+        const userRole = "bloodbank";
+        login(jwtDecode(credential).email,userRole);
+        localStorage.setItem("email", email);
         toast.success('Login Successful');
       } else {
         console.log("error login using google", response.data.message);
@@ -57,12 +65,6 @@ const MFLogin = () => {
     console.log('Google Sign In Failed');
     toast.error("Google Sign In Failed");
   };
-
-  useEffect(() => {
-    if (valid === true) {
-      navigate('/bloodbank'); 
-    }
-  }, [valid]);
 
   return (
     <div className={styles.authContainer}>

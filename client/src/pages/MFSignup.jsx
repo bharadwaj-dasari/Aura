@@ -4,10 +4,13 @@ import { GoogleLogin } from '@react-oauth/google';
 import styles from './auth.module.css';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import {useAuth} from '../Context/AuthContext.jsx';
 import toast from 'react-hot-toast';
 import axios from "axios";
+import { jwtDecode } from 'jwt-decode';
 
 const MFSignup = () => {
+  const {login} = useAuth();
   const navigate = useNavigate();
   // location fetching
   const coordinates={latitude:"",longitude:""};
@@ -52,9 +55,11 @@ const MFSignup = () => {
 
       try {
         const response = await axios.post("http://localhost:5000/api/facilities", facility);
-        if (response.data.message === "Facility added successfully") {
+        if (response.status ===  201) {
+          const userRole = "bloodbank";
+          login(email,userRole);
           toast.success("Signup successful!");
-          navigate("/facility-dashboard");
+          navigate("/bloodbank");
         } else {
           console.log("error signing up", response.data.message);
           toast.error("Signup failed. Please try again.");
@@ -68,6 +73,8 @@ const MFSignup = () => {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
+      const userRole = "bloodbank";
+      login(jwtDecode(credentialResponse).email,userRole);
       console.log('Google Sign Up Success:', credentialResponse);
       navigate("/google-signup", { state: credentialResponse });
     } catch (err) {

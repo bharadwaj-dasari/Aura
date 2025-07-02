@@ -26,7 +26,7 @@ const createFacility = async (facilityData) => {
         validateCoordinates(coordinates);
         const point = `POINT(${coordinates.longitude} ${coordinates.latitude})`;
         console.log("Geo Point to insert:", point);
-        const [row] = await db.execute(query, [name, facility_type, license_number, email, password, phone, JSON.stringify(location_info),point]);
+        const [row] = await db.execute(query, [name, facility_type, license_number, email, password, phone, ensureJSONString(location_info),point]);
         return { id: row.insertId, ...facilityData };
     } catch (error) {
         throw new Error(error.message);

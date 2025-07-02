@@ -5,6 +5,11 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const createFacility = async (req, res) => {
     try {
+        console.log(req.body);
+        const existingFacility = await facilityServices.getFacilityByEmail(req.body.email);
+        if(existingFacility){
+            return res.status(409).json({message:"Facility already exists with this Email"});
+        }
         const hashedPassword = await bcrypt.hash(req.body.password,10);
         const facilityData = {
             ...req.body,
@@ -23,6 +28,7 @@ const AuthFacility = async (req,res) => {
     try{
         const {email,password} = req.body;
         const facility = await facilityServices.getFacilityByEmail(email);
+        console.log(req.body);
         if(!facility){
             return res.status(400).json({message:"Invalid email or password"});
         }else{
@@ -35,11 +41,12 @@ const AuthFacility = async (req,res) => {
                 process.env.JWT_SECRET,
                 {expiresIn:'7d'}
             );
+            res.status(200).json({message:"Login Successful",token});
         }
     }catch(err){
         res.status(500).json({message:"Error authentication facility"});
     }
-}
+};
 
 const getAllFacilities = async (req, res) => {
     try {
@@ -60,6 +67,16 @@ const getFacilityById = async (req, res) => {
     }
 };
 
+const getFacilityByEmail = async(req,res)=> {
+    try{
+        const email = req.params.email;
+        const facility = await facilityServices.getFacilityByEmail(email);
+        res.status(200).json(facility);
+    }catch(error){
+        res.status(400).json({error:error.message});
+    }
+}
+
 const updateFacility = async (req, res) => {
     try {
         const updatedFacility = await facilityServices.updateFacility(req.params.id, req.body);
@@ -79,4 +96,4 @@ const deleteFacility = async (req, res) => {
     }
 };
 
-module.exports = { createFacility,AuthFacility, getAllFacilities, getFacilityById, updateFacility, deleteFacility };
+module.exports = { createFacility,AuthFacility, getAllFacilities, getFacilityById,getFacilityByEmail, updateFacility, deleteFacility };

@@ -3,8 +3,11 @@ const BloodRequestsService = require("../services/bloodRequestServices");
 const BloodRequestsController = {
   async createBloodRequest(req, res) {
     try {
-      console.log(req.body);
+      console.log(req.data);
       const newRequest = await BloodRequestsService.createBloodRequest(req.body);
+      if(!newRequest){
+        console.log("Blood request not added to the backend");
+      }
       res.status(201).json(newRequest);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -29,6 +32,18 @@ const BloodRequestsController = {
       res.status(200).json(request);
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  },
+
+  async getBloodRequestsByFacilityId(req,res){
+    try{
+      const request = await BloodRequestsService.getBloodRequestsByFacilityId(req.params.id);
+      if(!request){
+        return res.status(404).json({message:"Blood Request not found"});
+      }
+      res.staus(200).json(request);
+    }catch(error){
+      res.status(500).json({message:error.message});
     }
   },
 

@@ -1,20 +1,24 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import styles from './BloodBankPage.module.css';
 import BloodRequests from './BloodRequests.jsx';
-import BloodRequestForm from './BloodRequestForm.jsx';
+import BloodRequestForm from '../Components/BloodRequestForm.jsx';
 import Sidebar from '../Components/Side.jsx';
 import Analytics from './Analytics.jsx';
+import { useAuth } from '../Context/AuthContext.jsx';
+import Bloodhead from '../components/bloodhead.jsx';
 import DonorsList from './DonorsList.jsx';
-import Bloodhead from '../Components/bloodhead.jsx';
+import axios from 'axios';
 
 import {
   Plus, Droplet, Activity, AlertTriangle, Users, Clock
 } from 'lucide-react';
 
-function BloodBankPage(){
+const BloodBankPage = ()=>{
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [activeView, setActiveView] = useState('dashboard');
-
+  const {userEmail} = useAuth();
+  const email = userEmail || localStorage.getItem("email");
+  const [MFData,setMFData] = useState(null);
   const handleViewChange = (view) => {
     setActiveView(view);
   };
@@ -22,6 +26,19 @@ function BloodBankPage(){
   const toggleRequestForm = () => {
     setShowRequestForm(!showRequestForm);
   };
+
+  useEffect (() => {
+     const fetchFacilityData = async() => {
+      try{
+        const res = await axios.get(`http://localhost:5000/api/facility/${email}`);
+        setMFData(res.data);
+        console.log("Fetched Facility Data:",res. message);
+      }catch(err){
+        console.error("Error fetching facility Data:",err.message);
+      }
+     };
+     if(email)fetchFacilityData();
+  },[email]);
 
   return (
     <>
@@ -32,6 +49,7 @@ function BloodBankPage(){
         <Dashboard 
           activeView={activeView} 
           onCreateRequest={toggleRequestForm} 
+          MFData={MFData}
         />
         {showRequestForm && (
           <BloodRequestForm onClose={toggleRequestForm} />
@@ -75,7 +93,7 @@ const mockRequests = [
   }
 ];
 
-const Dashboard = ({ activeView, onCreateRequest }) => {
+const Dashboard = ({ activeView, onCreateRequest,MFData }) => {
   const renderView = () => {
     switch (activeView) {
       case 'dashboard':
@@ -100,7 +118,7 @@ const Dashboard = ({ activeView, onCreateRequest }) => {
       <div className={styles.dashboard}>
         <div className={styles.header}>
           <div>
-            <h1>Facility Dashboard</h1>
+            <h1>Facility Dashboard {MFData?.name || ''} </h1>
             <p>Welcome back, Medical Center</p>
           </div>
           <button 

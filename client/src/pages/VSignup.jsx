@@ -4,6 +4,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import styles from './auth.module.css';
 import { motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
+import {useAuth} from '../Context/AuthContext'
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from "axios";
@@ -11,7 +12,7 @@ const VSignup = () => {
 
   const navigate=useNavigate();
   const [coords, setCoords] = React.useState({ latitude: null, longitude: null });
-
+  const {login} = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -57,7 +58,9 @@ const VSignup = () => {
     try {
       const response = await axios.post("http://localhost:5000/api/donors", user);
   
-      if (response.data.message === "Donor added successfully") {
+      if (response.status === 201) {
+        const userRole = "donor";
+        login(email);
         toast.success("Signup successful!");
         navigate("/donor");
       } else {
@@ -73,6 +76,8 @@ const VSignup = () => {
   
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
+      const userRole = "donor";
+      login(jwtDecode(credential).email,userRole);
       console.log('Google Sign Up Success:', credentialResponse);
       navigate("/google-signup", { state: credentialResponse });
     } catch (err) {

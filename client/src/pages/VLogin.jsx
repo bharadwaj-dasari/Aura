@@ -8,12 +8,12 @@ import {jwtDecode} from "jwt-decode";
 import axios from 'axios';
 import toast from 'react-hot-toast';
 const VLogin = () => {
-  const [email,setEmailInput] = useState('');
+  //const [email,setEmailInput] = useState('');
  
   console.log(window.location.href);
   const navigate = useNavigate();
   const {login}=useAuth();
-  const [valid,setValid]=useState(false);
+  //const [valid,setValid]=useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,21 +25,15 @@ const VLogin = () => {
     try {
       const response = await axios.post("http://localhost:5000/api/donors/authdonor", { email: emailInput, password });
       console.log("Login Response:", response.data);
-  
-      if (response.data.token) {
-        login(emailInput); 
+      if (response.status === 200) {
+        const userRole = "donor";
+        login(emailInput,userRole); 
         toast.success("Login Successful");
         navigate("/donor");
       console.log("✅ Login Response:", response.data);
-  
-      if (response.data.token) {
-        login(emailInput);
-        toast.success("Login Successful");
-        navigate("/donor");
-      } else {
+       } else {
         toast.error("Invalid Credentials");
       }
-    } 
     }catch (err) {
       if (err.response) {
         toast.error(`Error: ${err.response.data.message}`);
@@ -53,9 +47,6 @@ const VLogin = () => {
       }
     }
   };
-  
-
-  
 
   const handleGoogleSuccess =async (credentialResponse) => {
     try{
@@ -65,7 +56,8 @@ const VLogin = () => {
     console.log("response",response);
 
       if (response.data.message === "success") {
-        login(jwtDecode(credential).email);
+        const userRole = "donor";
+        login(jwtDecode(credential).email,userRole);
         toast.success('Login Successful');
         navigate('/donor');
       } else {

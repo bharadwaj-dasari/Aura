@@ -19,7 +19,7 @@ const BloodRequestsService = {
     try {
       const [rows] = await db.execute(`SELECT * FROM bloodRequests`);
       return rows;
-    } catch (error) {
+    } catch (error) { 
       throw new Error("Failed to fetch blood requests: " + error.message);
     }
   },
@@ -39,6 +39,15 @@ const BloodRequestsService = {
       return { message: "Blood request deleted successfully" };
     } catch (error) {
       throw new Error("Failed to delete blood request: " + error.message);
+    }
+  },
+
+  async getBloodRequestsByFacilityId(facility_id){
+    try{
+      const [rows] = await db.execute(`SELECT * FROM bloodRequests WHERE facility_id = ?`,[facility_id]);
+      return rows[0];
+    }catch(error){
+      throw new Error("Failed to fetch blood request: "+ error.message);
     }
   }
 };

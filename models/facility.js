@@ -11,6 +11,7 @@ const facilityTable = `
    phone VARCHAR(15) NOT NULL,
    location_info JSON,
    coordinates POINT NOT NULL,
+   verified BOOLEAN DEFAULT FALSE,
    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    SPATIAL INDEX (coordinates)
  );

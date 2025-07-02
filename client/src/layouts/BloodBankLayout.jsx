@@ -6,7 +6,7 @@ import '../App.css';
 import styles from '../pages/BloodBankPage.module.css'
 import Footer from "../Components/Footer";
 import Sidebar from "../Components/Side";
-import BloodRequestForm from "../pages/BloodRequestForm";
+import BloodRequestForm from "../Components/BloodRequestForm";
 
 
 
